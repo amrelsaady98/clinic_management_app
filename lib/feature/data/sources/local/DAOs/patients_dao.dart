@@ -15,7 +15,7 @@ abstract class PatientDao {
   Future<List<PatientModel>?> getAllPatient();
 
   @Query(
-      'SELECT * FROM patients WHERE name LIKE :name AND (phoneNumber LIKE :phoneNumber OR phoneNumber  ISNULL)')
+      'SELECT * FROM patients WHERE name LIKE :name AND (phoneNumber LIKE :phoneNumber OR phoneNumber  ISNULL) ORDER BY phoneNumber DESC, id ASC')
   Future<List<PatientModel>?> getAllPatientsFilter(
     String name,
     String phoneNumber,

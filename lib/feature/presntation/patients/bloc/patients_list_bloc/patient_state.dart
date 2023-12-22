@@ -1,38 +1,60 @@
 import 'package:clinc_management_app/feature/diomain/entities/patient.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/widgets.dart';
 
-abstract class PatientState extends Equatable {
+class PatientState extends Equatable {
   final List<Patient>? patientsList;
 
   final String? nameFilter;
   final int? ageFilter;
   final String? phoneNumberFilter;
 
-  final bool? isTableLoading;
+  final String? newPatientName;
+  final String? newPatientAge;
+  final String? newPatientGender;
+  final String? newPatientPhoneNumber;
 
-  final TextEditingController addPateintNameController =
-      TextEditingController();
-  final TextEditingController addPateintAgeController = TextEditingController();
-  final TextEditingController addPateintGenderController =
-      TextEditingController();
-  final TextEditingController addPateintPhoneNumberController =
-      TextEditingController();
+  final bool isTableLoading;
+  final bool isAddPatientLoading;
 
-  final TextEditingController nameFilterController = TextEditingController();
-  final TextEditingController phoneNumberFilterController =
-      TextEditingController();
-
-  String? genderGroubValue;
-
-  PatientState({
+  const PatientState({
     this.patientsList,
     this.nameFilter,
     this.ageFilter,
+    this.newPatientName,
+    this.newPatientAge,
+    this.newPatientGender,
+    this.newPatientPhoneNumber,
     this.phoneNumberFilter,
-    this.isTableLoading,
+    this.isTableLoading = false,
+    this.isAddPatientLoading = false,
   });
+
+  PatientState copyWith({
+    List<Patient>? patientsList,
+    String? nameFilter,
+    int? ageFilter,
+    String? phoneNumberFilter,
+    String? newPatientName,
+    String? newPatientAge,
+    String? newPatientGender,
+    String? newPatientPhoneNumber,
+    bool? isTableLoading,
+    bool? isAddPatientLoading,
+  }) {
+    return PatientState(
+      patientsList: patientsList ?? this.patientsList,
+      nameFilter: nameFilter ?? this.nameFilter,
+      ageFilter: ageFilter ?? this.ageFilter,
+      phoneNumberFilter: phoneNumberFilter ?? this.phoneNumberFilter,
+      newPatientName: newPatientName ?? this.newPatientName,
+      newPatientAge: newPatientAge ?? this.newPatientAge,
+      newPatientGender: newPatientGender ?? this.newPatientGender,
+      newPatientPhoneNumber:
+          newPatientPhoneNumber ?? this.newPatientPhoneNumber,
+      isAddPatientLoading: isAddPatientLoading ?? this.isAddPatientLoading,
+      isTableLoading: isTableLoading ?? this.isTableLoading,
+    );
+  }
 
   @override
   // TODO: implement props
@@ -40,52 +62,12 @@ abstract class PatientState extends Equatable {
         patientsList,
         nameFilter,
         ageFilter,
+        newPatientName,
+        newPatientAge,
+        newPatientGender,
+        newPatientPhoneNumber,
         phoneNumberFilter,
         isTableLoading,
+        isAddPatientLoading,
       ];
-}
-
-class PatientDataLoadingState extends PatientState {
-  PatientDataLoadingState withParameters({
-    String? name,
-    String? phoneNumber,
-  }) {
-    phoneNumberFilterController.text = phoneNumber ?? "";
-    nameFilterController.text = name ?? "";
-    nameFilterController.selection.end;
-    return this;
-  }
-}
-
-class PatientDataLodingDoneState extends PatientState {
-  PatientDataLodingDoneState({List<Patient>? patientsList})
-      : super(patientsList: patientsList);
-  PatientDataLodingDoneState withParameters({
-    String? name,
-    String? phoneNumber,
-  }) {
-    nameFilterController.selection =
-        TextSelection.fromPosition(TextPosition(offset: name?.length ?? 0));
-    phoneNumberFilterController.text = phoneNumber ?? "";
-    nameFilterController.text = name ?? "";
-    return this;
-  }
-}
-
-class PatientAddedState extends PatientState {
-  PatientAddedState({
-    super.patientsList,
-    super.nameFilter,
-    super.ageFilter,
-    super.phoneNumberFilter,
-  });
-}
-
-class PatientAddLoading extends PatientState {
-  PatientAddLoading({
-    super.patientsList,
-    super.nameFilter,
-    super.ageFilter,
-    super.phoneNumberFilter,
-  });
 }

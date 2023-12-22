@@ -11,15 +11,18 @@ class GetAllPatientsEvent extends PatientsEvent {
 }
 
 class GetFilteredPateinetsEvent extends PatientsEvent {
-  const GetFilteredPateinetsEvent();
+  final String? nameFilter;
+  final String? ageFilter;
+  final String? phoneNumberFilter;
+  const GetFilteredPateinetsEvent(
+      {this.nameFilter, this.ageFilter, this.phoneNumberFilter});
 
   @override
   List<Object?> get props => [];
 }
 
 class NewPatientFieldUpdate extends PatientsEvent {
-  final String? name, phoneNumber, gender;
-  final int? age;
+  final String? name, age, phoneNumber, gender;
 
   const NewPatientFieldUpdate({
     this.name,

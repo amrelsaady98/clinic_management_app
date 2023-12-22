@@ -25,35 +25,38 @@ class PatientBloc extends Bloc<PatientsEvent, PatientState> {
 
   Future<void> loadPatientData(
       PatientsEvent event, Emitter<PatientState> emit) async {
+    emit(state.copyWith(isTableLoading: true));
     List<Patient> data = await GetAllPatientsUsecase(_patientsRepo).call();
-    emit(PatientDataLodingDoneState(patientsList: data));
+    emit(state.copyWith(isTableLoading: false, patientsList: data));
   }
 
   Future<void> loadFilteredPatientData(
       GetFilteredPateinetsEvent event, Emitter<PatientState> emit) async {
-    emit(PatientDataLoadingState().withParameters(
-      name: state.nameFilterController.text,
-      phoneNumber: state.phoneNumberFilterController.text,
+    emit(state.copyWith(
+      nameFilter: event.nameFilter,
+      ageFilter: event.ageFilter != null ? int.parse(event.ageFilter!) : null,
+      phoneNumberFilter: event.phoneNumberFilter,
     ));
-
+    if ((state.nameFilter == null || state.nameFilter == "") &&
+        (state.phoneNumberFilter == null || state.phoneNumberFilter == "")) {
+      await loadPatientData(event, emit);
+      return;
+    }
     List<Patient> data = await GetAllPatientsFilterUsecase(_patientsRepo)(
         params: <String, dynamic>{
-          "name": state.nameFilterController.text,
-          "phone_number": state.phoneNumberFilterController.text
+          "name": state.nameFilter,
+          "phone_number": state.phoneNumberFilter
         });
-    emit(PatientDataLodingDoneState(patientsList: data).withParameters(
-      name: state.nameFilterController.text,
-      phoneNumber: state.phoneNumberFilterController.text,
-    ));
+    emit(state.copyWith(patientsList: data, isTableLoading: false));
   }
 
   Future<void> addPateint(
       PatientsEvent event, Emitter<PatientState> emit) async {
     await _patientsRepo.addPatient(Patient(
-      name: state.addPateintNameController.text,
-      age: int.parse(state.addPateintAgeController.text),
-      gender: state.genderGroubValue ?? "not defined",
-      phoneNumber: state.addPateintPhoneNumberController.text,
+      name: state.newPatientName!,
+      age: int.parse(state.newPatientAge!),
+      gender: state.newPatientGender!,
+      phoneNumber: state.newPatientPhoneNumber,
     ));
     await loadPatientData(event, emit);
   }

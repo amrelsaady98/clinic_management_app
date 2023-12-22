@@ -12,6 +12,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+
 void main() async {
   AppDatabase database =
       await $FloorAppDatabase.databaseBuilder('app_database.db').build();
@@ -34,7 +35,7 @@ class MainApp extends StatelessWidget {
         ),
         BlocProvider<PatientBloc>(
           create: (context) => PatientBloc(
-              initialState: PatientDataLoadingState(),
+              initialState: const PatientState(isTableLoading: true),
               patientsRepo: PatientsRepo(_appDatabase.patientDao))
             ..add(const GetAllPatientsEvent()),
         ),

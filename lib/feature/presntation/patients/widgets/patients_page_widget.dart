@@ -119,7 +119,6 @@ class _AddPatientDialougeState extends State<AddPatientDialouge> {
             SizedBox(
               width: 50.mm,
               child: CustomTextField(
-                controller: widget.state.addPateintNameController,
                 lable: translation!.common_name,
               ),
             ),
@@ -129,7 +128,6 @@ class _AddPatientDialougeState extends State<AddPatientDialouge> {
             SizedBox(
               width: 20.mm,
               child: CustomTextField(
-                controller: widget.state.addPateintAgeController,
                 lable: translation!.common_age,
               ),
             ),
@@ -165,7 +163,6 @@ class _AddPatientDialougeState extends State<AddPatientDialouge> {
             SizedBox(
               width: 50.mm,
               child: CustomTextField(
-                controller: widget.state.addPateintPhoneNumberController,
                 lable: translation.common_phone_number,
                 inputFormatter: <TextInputFormatter>[
                   FilteringTextInputFormatter.digitsOnly,
@@ -179,7 +176,6 @@ class _AddPatientDialougeState extends State<AddPatientDialouge> {
                 value: "male",
                 groupValue: genderGroubValue,
                 onChanged: (value) {
-                  widget.state.genderGroubValue = value;
                   setState(() {
                     genderGroubValue = value;
                   });
@@ -193,7 +189,6 @@ class _AddPatientDialougeState extends State<AddPatientDialouge> {
                 value: "female",
                 groupValue: genderGroubValue,
                 onChanged: (value) {
-                  widget.state.genderGroubValue = value;
                   setState(() {
                     genderGroubValue = value;
                   });

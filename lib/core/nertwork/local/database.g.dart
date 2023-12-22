@@ -136,7 +136,8 @@ class _$PatientDao extends PatientDao {
             id: row['id'] as int?,
             name: row['name'] as String,
             age: row['age'] as int,
-            gender: row['gender'] as String),
+            gender: row['gender'] as String,
+            phoneNumber: row['phoneNumber'] as String?),
         arguments: [id]);
   }
 
@@ -144,12 +145,11 @@ class _$PatientDao extends PatientDao {
   Future<List<PatientModel>?> getAllPatient() async {
     return _queryAdapter.queryList('SELECT * FROM  patients',
         mapper: (Map<String, Object?> row) => PatientModel(
-              id: row['id'] as int?,
-              name: row['name'] as String,
-              age: row['age'] as int,
-              gender: row['gender'] as String,
-              phoneNumber: row['phoneNumber'] as String?,
-            ));
+            id: row['id'] as int?,
+            name: row['name'] as String,
+            age: row['age'] as int,
+            gender: row['gender'] as String,
+            phoneNumber: row['phoneNumber'] as String?));
   }
 
   @override
@@ -158,8 +158,8 @@ class _$PatientDao extends PatientDao {
     String phoneNumber,
   ) async {
     return _queryAdapter.queryList(
-        'SELECT * FROM patients WHERE name LIKE ?1 AND (phoneNumber LIKE ?2 OR phoneNumber  ISNULL)',
-        mapper: (Map<String, Object?> row) => PatientModel(id: row['id'] as int?, name: row['name'] as String, age: row['age'] as int, gender: row['gender'] as String),
+        'SELECT * FROM patients WHERE name LIKE ?1 AND (phoneNumber LIKE ?2 OR phoneNumber  ISNULL) ORDER BY phoneNumber DESC, id ASC',
+        mapper: (Map<String, Object?> row) => PatientModel(id: row['id'] as int?, name: row['name'] as String, age: row['age'] as int, gender: row['gender'] as String, phoneNumber: row['phoneNumber'] as String?),
         arguments: [name, phoneNumber]);
   }
 

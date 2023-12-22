@@ -75,11 +75,9 @@ class PatientsPages extends StatelessWidget {
                         SizedBox(
                           width: 50.mm,
                           child: TextField(
-                            controller: state.nameFilterController,
                             onChanged: (value) {
-                              // TODO: Add onTextCahnge function --> filter event --> bloc
-                              BlocProvider.of<PatientBloc>(context)
-                                  .add(GetFilteredPateinetsEvent());
+                              BlocProvider.of<PatientBloc>(context).add(
+                                  GetFilteredPateinetsEvent(nameFilter: value));
                             },
                             decoration: InputDecoration(
                               label: Text("${translation?.common_name}"),
@@ -121,10 +119,10 @@ class PatientsPages extends StatelessWidget {
                         SizedBox(
                           width: 50.mm,
                           child: TextField(
-                            controller: state.phoneNumberFilterController,
-                            onChanged: (_) =>
-                                BlocProvider.of<PatientBloc>(context)
-                                    .add(GetFilteredPateinetsEvent()),
+                            onChanged: (value) =>
+                                BlocProvider.of<PatientBloc>(context).add(
+                                    GetFilteredPateinetsEvent(
+                                        phoneNumberFilter: value)),
                             keyboardType: TextInputType.number,
                             inputFormatters: <TextInputFormatter>[
                               FilteringTextInputFormatter.digitsOnly
@@ -148,7 +146,7 @@ class PatientsPages extends StatelessWidget {
                   height: Device.height - 50.mm,
                   child: Padding(
                     padding: EdgeInsets.all(2.mm),
-                    child: (state is PatientDataLoadingState)
+                    child: (state.isTableLoading)
                         ? const Center(child: CircularProgressIndicator())
                         : Expanded(
                             child: PatientData(state: state),
