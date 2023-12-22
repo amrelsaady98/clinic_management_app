@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:clinc_management_app/feature/data/repos/patient_repo.dart';
 import 'package:clinc_management_app/feature/diomain/entities/patient.dart';
 import 'package:clinc_management_app/feature/diomain/usecases/get_all_patients.dart';
@@ -19,6 +21,8 @@ class PatientBloc extends Bloc<PatientsEvent, PatientState> {
         await addPateint(event, emit);
       } else if (event is GetFilteredPateinetsEvent) {
         await loadFilteredPatientData(event, emit);
+      } else if (event is NewPatientFieldUpdate) {
+        await updateNewPatientField(event, emit);
       }
     });
   }
@@ -52,12 +56,27 @@ class PatientBloc extends Bloc<PatientsEvent, PatientState> {
 
   Future<void> addPateint(
       PatientsEvent event, Emitter<PatientState> emit) async {
+    emit(state.copyWith(isAddPatientLoading: true));
     await _patientsRepo.addPatient(Patient(
       name: state.newPatientName!,
       age: int.parse(state.newPatientAge!),
       gender: state.newPatientGender!,
       phoneNumber: state.newPatientPhoneNumber,
     ));
+    emit(state.copyWith(
+      isPatientAdded: true,
+      isAddPatientLoading: false,
+    ));
     await loadPatientData(event, emit);
+  }
+
+  Future<void> updateNewPatientField(
+      NewPatientFieldUpdate event, Emitter<PatientState> emit) async {
+    emit(state.copyWith(
+      newPatientName: event.name,
+      newPatientAge: event.age,
+      newPatientGender: event.gender,
+      newPatientPhoneNumber: event.phoneNumber,
+    ));
   }
 }

@@ -94,6 +94,7 @@ class AddPatientDialouge extends StatefulWidget {
 
 class _AddPatientDialougeState extends State<AddPatientDialouge> {
   String? genderGroubValue;
+
   @override
   Widget build(BuildContext context) {
     AppLocalizations? translation = AppLocalizations.of(context);
@@ -119,8 +120,12 @@ class _AddPatientDialougeState extends State<AddPatientDialouge> {
             SizedBox(
               width: 50.mm,
               child: CustomTextField(
-                lable: translation!.common_name,
-              ),
+                  lable: translation!.common_name,
+                  onChange: (value) {
+                    context
+                        .read<PatientBloc>()
+                        .add(NewPatientFieldUpdate(name: value));
+                  }),
             ),
             SizedBox(
               width: 2.mm,
@@ -128,7 +133,12 @@ class _AddPatientDialougeState extends State<AddPatientDialouge> {
             SizedBox(
               width: 20.mm,
               child: CustomTextField(
-                lable: translation!.common_age,
+                lable: translation.common_age,
+                onChange: (value) {
+                  context
+                      .read<PatientBloc>()
+                      .add(NewPatientFieldUpdate(age: value));
+                },
               ),
             ),
             SizedBox(
@@ -163,11 +173,15 @@ class _AddPatientDialougeState extends State<AddPatientDialouge> {
             SizedBox(
               width: 50.mm,
               child: CustomTextField(
-                lable: translation.common_phone_number,
-                inputFormatter: <TextInputFormatter>[
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-              ),
+                  lable: translation.common_phone_number,
+                  inputFormatter: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  onChange: (value) {
+                    context
+                        .read<PatientBloc>()
+                        .add(NewPatientFieldUpdate(phoneNumber: value));
+                  }),
             ),
             SizedBox(
               width: 30.mm,
@@ -177,6 +191,9 @@ class _AddPatientDialougeState extends State<AddPatientDialouge> {
                 groupValue: genderGroubValue,
                 onChanged: (value) {
                   setState(() {
+                    context
+                        .read<PatientBloc>()
+                        .add(NewPatientFieldUpdate(gender: value));
                     genderGroubValue = value;
                   });
                 },
@@ -190,6 +207,9 @@ class _AddPatientDialougeState extends State<AddPatientDialouge> {
                 groupValue: genderGroubValue,
                 onChanged: (value) {
                   setState(() {
+                    context
+                        .read<PatientBloc>()
+                        .add(NewPatientFieldUpdate(gender: value));
                     genderGroubValue = value;
                   });
                 },
@@ -203,7 +223,7 @@ class _AddPatientDialougeState extends State<AddPatientDialouge> {
             onPressed: () {
               BlocProvider.of<PatientBloc>(context).add(AddPatientEvent());
             },
-            child: Text(translation!.common_add)),
+            child: Text(translation.common_add)),
         TextButton(
           onPressed: () {
             Navigator.pop(context); //close Dialog
@@ -212,6 +232,5 @@ class _AddPatientDialougeState extends State<AddPatientDialouge> {
         )
       ],
     );
-    ;
   }
 }

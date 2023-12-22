@@ -15,6 +15,7 @@ class PatientState extends Equatable {
 
   final bool isTableLoading;
   final bool isAddPatientLoading;
+  final bool isPatientAdded;
 
   const PatientState({
     this.patientsList,
@@ -27,6 +28,7 @@ class PatientState extends Equatable {
     this.phoneNumberFilter,
     this.isTableLoading = false,
     this.isAddPatientLoading = false,
+    this.isPatientAdded = false,
   });
 
   PatientState copyWith({
@@ -40,6 +42,7 @@ class PatientState extends Equatable {
     String? newPatientPhoneNumber,
     bool? isTableLoading,
     bool? isAddPatientLoading,
+    bool? isPatientAdded,
   }) {
     return PatientState(
       patientsList: patientsList ?? this.patientsList,
@@ -53,6 +56,7 @@ class PatientState extends Equatable {
           newPatientPhoneNumber ?? this.newPatientPhoneNumber,
       isAddPatientLoading: isAddPatientLoading ?? this.isAddPatientLoading,
       isTableLoading: isTableLoading ?? this.isTableLoading,
+      isPatientAdded: isPatientAdded ?? this.isPatientAdded,
     );
   }
 
