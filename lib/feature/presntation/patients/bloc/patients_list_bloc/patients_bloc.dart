@@ -21,8 +21,10 @@ class PatientBloc extends Bloc<PatientsEvent, PatientState> {
         await addPateint(event, emit);
       } else if (event is GetFilteredPateinetsEvent) {
         await loadFilteredPatientData(event, emit);
-      } else if (event is NewPatientFieldUpdate) {
-        await updateNewPatientField(event, emit);
+      } else if (event is ViewAddPatientSection) {
+        await viewAddPatientSection(event, emit);
+      } else if (event is HideAddPatientSection) {
+        await hideAddPatientSection(event, emit);
       }
     });
   }
@@ -55,13 +57,13 @@ class PatientBloc extends Bloc<PatientsEvent, PatientState> {
   }
 
   Future<void> addPateint(
-      PatientsEvent event, Emitter<PatientState> emit) async {
+      AddPatientEvent event, Emitter<PatientState> emit) async {
     emit(state.copyWith(isAddPatientLoading: true));
     await _patientsRepo.addPatient(Patient(
-      name: state.newPatientName!,
-      age: int.parse(state.newPatientAge!),
-      gender: state.newPatientGender!,
-      phoneNumber: state.newPatientPhoneNumber,
+      name: event.patientName!,
+      age: int.parse(event.patientAge!),
+      gender: event.patientGender!,
+      phoneNumber: event.patientPhoneNumber!,
     ));
     emit(state.copyWith(
       isPatientAdded: true,
@@ -70,13 +72,13 @@ class PatientBloc extends Bloc<PatientsEvent, PatientState> {
     await loadPatientData(event, emit);
   }
 
-  Future<void> updateNewPatientField(
-      NewPatientFieldUpdate event, Emitter<PatientState> emit) async {
-    emit(state.copyWith(
-      newPatientName: event.name,
-      newPatientAge: event.age,
-      newPatientGender: event.gender,
-      newPatientPhoneNumber: event.phoneNumber,
-    ));
+  viewAddPatientSection(
+      ViewAddPatientSection event, Emitter<PatientState> emit) {
+    emit(state.copyWith(addPatientVisible: true));
+  }
+
+  hideAddPatientSection(
+      HideAddPatientSection event, Emitter<PatientState> emit) {
+    emit(state.copyWith(addPatientVisible: false));
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:clinc_management_app/core/utils/widgets/input_widgets.dart';
 import 'package:clinc_management_app/feature/presntation/patients/bloc/patients_list_bloc/patients_event.dart';
 import 'package:clinc_management_app/feature/presntation/patients/widgets/patients_page_widget.dart';
@@ -47,18 +49,37 @@ class PatientsPages extends StatelessWidget {
                         ),
                         IconButton(
                           onPressed: () {
-                            showDialog(
-                                context: context,
-                                builder: (context) {
-                                  return AddPatientDialouge(
-                                      patientState: state, onPressAdd: () {});
-                                });
+                            // showDialog(
+                            //     context: context,
+                            //     builder: (context) {
+                            //       return AddPatientDialouge(
+                            //           patientState: state, onPressAdd: () {});
+                            //     });
+                            if (!state.addPatientVisible) {
+                              context
+                                  .read<PatientBloc>()
+                                  .add(ViewAddPatientSection());
+                            } else {
+                              context
+                                  .read<PatientBloc>()
+                                  .add(HideAddPatientSection());
+                            }
                           },
-                          icon: Icon(FontAwesomeIcons.circlePlus),
+                          icon: Icon(!state.addPatientVisible
+                              ? FontAwesomeIcons.circlePlus
+                              : FontAwesomeIcons.xmark),
                         )
                       ],
                     ),
                   ),
+                ),
+                Visibility(
+                  visible: state.addPatientVisible,
+                  child: SizedBox(
+                      height: 30.mm,
+                      child: AddPatientSection(
+                        state: state,
+                      )),
                 ),
                 // Search & filters
                 SizedBox(
@@ -80,7 +101,7 @@ class PatientsPages extends StatelessWidget {
                                   GetFilteredPateinetsEvent(nameFilter: value));
                             },
                             decoration: InputDecoration(
-                              label: Text("${translation?.common_name}"),
+                              label: Text("${translation!.common_name}"),
                               border: OutlineInputBorder(
                                   borderRadius:
                                       BorderRadius.all(Radius.circular(2.mm))),
@@ -96,7 +117,7 @@ class PatientsPages extends StatelessWidget {
                           width: 30.mm,
                           child: DropdownMenu<int>(
                             width: 30.mm,
-                            label: Text("${translation?.common_age}"),
+                            label: Text(translation.common_age),
                             inputDecorationTheme: InputDecorationTheme(
                               border: OutlineInputBorder(
                                   borderRadius:
@@ -104,8 +125,9 @@ class PatientsPages extends StatelessWidget {
                               contentPadding: EdgeInsets.symmetric(
                                   vertical: 0, horizontal: 2.mm),
                             ),
-                            dropdownMenuEntries: [0, 1, 2, 3, 4, 5, 6]
-                                .map<DropdownMenuEntry<int>>((e) {
+                            dropdownMenuEntries:
+                                List<int>.generate(99, (index) => index)
+                                    .map<DropdownMenuEntry<int>>((e) {
                               return DropdownMenuEntry(
                                 value: e,
                                 label: "$e",
@@ -142,8 +164,7 @@ class PatientsPages extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
-                  height: Device.height - 50.mm,
+                Expanded(
                   child: Padding(
                     padding: EdgeInsets.all(2.mm),
                     child: (state.isTableLoading)

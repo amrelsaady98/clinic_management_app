@@ -36,6 +36,26 @@ class NewPatientFieldUpdate extends PatientsEvent {
 }
 
 class AddPatientEvent extends PatientsEvent {
+  const AddPatientEvent({
+    this.patientName,
+    this.patientAge,
+    this.patientGender,
+    this.patientPhoneNumber,
+  });
+
+  final String? patientName, patientGender, patientPhoneNumber, patientAge;
+
   @override
   List<Object?> get props => [];
+}
+
+class ViewAddPatientSection extends PatientsEvent {
+  @override
+  List<Object?> get props => throw UnimplementedError();
+}
+
+class HideAddPatientSection extends PatientsEvent {
+  @override
+  // TODO: implement props
+  List<Object?> get props => throw UnimplementedError();
 }

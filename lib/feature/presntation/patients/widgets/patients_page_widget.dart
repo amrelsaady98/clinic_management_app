@@ -11,6 +11,131 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+class AddPatientSection extends StatefulWidget {
+  const AddPatientSection({super.key, required this.state});
+  final state;
+  @override
+  State<AddPatientSection> createState() => _AddPatientSectionState();
+}
+
+class _AddPatientSectionState extends State<AddPatientSection> {
+  final nameController = TextEditingController();
+  final ageController = TextEditingController();
+  final genderController = TextEditingController();
+  final phoneNumberController = TextEditingController();
+
+  @override
+  Widget build(BuildContext context) {
+    final translation = AppLocalizations.of(context);
+    return Container(
+      decoration: BoxDecoration(
+        border: Border.all(),
+      ),
+      padding: EdgeInsets.all(4.mm),
+      margin: EdgeInsets.all(2.mm),
+      alignment: AlignmentDirectional.center,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              SizedBox(
+                width: 50.mm,
+                child: CustomTextField(
+                  lable: translation!.common_name,
+                  onChange: (value) => context
+                      .read<PatientBloc>()
+                      .add(NewPatientFieldUpdate(name: value)),
+                  controller: nameController,
+                ),
+              ),
+              SizedBox(width: 4.mm),
+              SizedBox(
+                width: 30.mm,
+                child: DropdownMenu<int>(
+                  width: 30.mm,
+                  controller: ageController,
+                  label: Text(translation.common_age),
+                  inputDecorationTheme: InputDecorationTheme(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(2.mm))),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 0, horizontal: 2.mm),
+                  ),
+                  dropdownMenuEntries: List<int>.generate(99, (index) => index)
+                      .map<DropdownMenuEntry<int>>((e) {
+                    return DropdownMenuEntry(
+                      value: e,
+                      label: "$e",
+                    );
+                  }).toList(),
+                ),
+              ),
+              SizedBox(width: 4.mm),
+              SizedBox(
+                width: 30.mm,
+                child: DropdownMenu<String>(
+                  width: 30.mm,
+                  label: Text(translation.common_gender),
+                  controller: genderController,
+                  inputDecorationTheme: InputDecorationTheme(
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.all(Radius.circular(2.mm))),
+                    contentPadding:
+                        EdgeInsets.symmetric(vertical: 0, horizontal: 2.mm),
+                  ),
+                  dropdownMenuEntries: [
+                    DropdownMenuEntry<String>(
+                      label: translation.common_male,
+                      value: "male",
+                    ),
+                    DropdownMenuEntry<String>(
+                      label: translation.common_female,
+                      value: "female",
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 4.mm),
+              SizedBox(
+                width: 60.mm,
+                child: CustomTextField(
+                  lable: translation.common_phone_number,
+                  controller: phoneNumberController,
+                  inputFormatter: <TextInputFormatter>[
+                    FilteringTextInputFormatter.digitsOnly,
+                  ],
+                  onChange: (value) => context
+                      .read<PatientBloc>()
+                      .add(NewPatientFieldUpdate(phoneNumber: value)),
+                ),
+              ),
+              SizedBox(
+                width: 50.mm,
+                child: Container(
+                  alignment: AlignmentDirectional.center,
+                  child: TextButton(
+                      onPressed: () {
+                        context.read<PatientBloc>().add(AddPatientEvent(
+                              patientName: nameController.text,
+                              patientAge: ageController.text,
+                              patientGender: genderController.text,
+                              patientPhoneNumber: phoneNumberController.text,
+                            ));
+                      },
+                      child: Text(translation.common_add)),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
 class PatientData extends StatelessWidget {
   const PatientData({super.key, required PatientState state}) : _state = state;
   final PatientState _state;
@@ -202,7 +327,7 @@ class _AddPatientDialougeState extends State<AddPatientDialouge> {
             SizedBox(
               width: 30.mm,
               child: RadioListTile(
-                title: Text(translation.comon_female),
+                title: Text(translation.common_female),
                 value: "female",
                 groupValue: genderGroubValue,
                 onChanged: (value) {
