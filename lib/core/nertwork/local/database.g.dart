@@ -63,6 +63,10 @@ class _$AppDatabase extends AppDatabase {
 
   PatientDao? _patientDaoInstance;
 
+  ScanDao? _scanDaoInstance;
+
+  ApplicatorDao? _applicatorDaoInstance;
+
   Future<sqflite.Database> open(
     String path,
     List<Migration> migrations, [
@@ -86,6 +90,10 @@ class _$AppDatabase extends AppDatabase {
       onCreate: (database, version) async {
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `patients` (`id` INTEGER, `name` TEXT NOT NULL, `age` INTEGER NOT NULL, `gender` TEXT NOT NULL, `phoneNumber` TEXT, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `scanCataloge` (`id` INTEGER NOT NULL, `type` INTEGER NOT NULL, `area` TEXT NOT NULL, `subArea` TEXT, `price` REAL, `estimatedTime` INTEGER, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `applicators` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -96,6 +104,16 @@ class _$AppDatabase extends AppDatabase {
   @override
   PatientDao get patientDao {
     return _patientDaoInstance ??= _$PatientDao(database, changeListener);
+  }
+
+  @override
+  ScanDao get scanDao {
+    return _scanDaoInstance ??= _$ScanDao(database, changeListener);
+  }
+
+  @override
+  ApplicatorDao get applicatorDao {
+    return _applicatorDaoInstance ??= _$ApplicatorDao(database, changeListener);
   }
 }
 
@@ -167,5 +185,148 @@ class _$PatientDao extends PatientDao {
   Future<void> insertPatient(PatientModel patient) async {
     await _patientModelInsertionAdapter.insert(
         patient, OnConflictStrategy.abort);
+  }
+}
+
+class _$ScanDao extends ScanDao {
+  _$ScanDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _scanCatalogeModelInsertionAdapter = InsertionAdapter(
+            database,
+            'scanCataloge',
+            (ScanCatalogeModel item) => <String, Object?>{
+                  'id': item.id,
+                  'type': item.type.index,
+                  'area': item.area,
+                  'subArea': item.subArea,
+                  'price': item.price,
+                  'estimatedTime': item.estimatedTime
+                }),
+        _scanCatalogeModelUpdateAdapter = UpdateAdapter(
+            database,
+            'scanCataloge',
+            ['id'],
+            (ScanCatalogeModel item) => <String, Object?>{
+                  'id': item.id,
+                  'type': item.type.index,
+                  'area': item.area,
+                  'subArea': item.subArea,
+                  'price': item.price,
+                  'estimatedTime': item.estimatedTime
+                }),
+        _scanCatalogeModelDeletionAdapter = DeletionAdapter(
+            database,
+            'scanCataloge',
+            ['id'],
+            (ScanCatalogeModel item) => <String, Object?>{
+                  'id': item.id,
+                  'type': item.type.index,
+                  'area': item.area,
+                  'subArea': item.subArea,
+                  'price': item.price,
+                  'estimatedTime': item.estimatedTime
+                });
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<ScanCatalogeModel> _scanCatalogeModelInsertionAdapter;
+
+  final UpdateAdapter<ScanCatalogeModel> _scanCatalogeModelUpdateAdapter;
+
+  final DeletionAdapter<ScanCatalogeModel> _scanCatalogeModelDeletionAdapter;
+
+  @override
+  Future<List<ScanCatalogeModel>?> getAllScanCataloge() async {
+    return _queryAdapter.queryList('SELECT * FROM scan_cataloge',
+        mapper: (Map<String, Object?> row) => ScanCatalogeModel(
+            id: row['id'] as int,
+            type: ScanType.values[row['type'] as int],
+            area: row['area'] as String,
+            subArea: row['subArea'] as String?,
+            price: row['price'] as double?,
+            estimatedTime: row['estimatedTime'] as int?));
+  }
+
+  @override
+  Future<ScanCatalogeModel?> getScanCatalogeById(int id) async {
+    return _queryAdapter.query('SELECT * FROM scan_cataloge WHERE id = ?1',
+        mapper: (Map<String, Object?> row) => ScanCatalogeModel(
+            id: row['id'] as int,
+            type: ScanType.values[row['type'] as int],
+            area: row['area'] as String,
+            subArea: row['subArea'] as String?,
+            price: row['price'] as double?,
+            estimatedTime: row['estimatedTime'] as int?),
+        arguments: [id]);
+  }
+
+  @override
+  Future<void> insertScanCataloge(ScanCatalogeModel scanCataloge) async {
+    await _scanCatalogeModelInsertionAdapter.insert(
+        scanCataloge, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> updateScanCataloge(ScanCatalogeModel scanCatalogeModel) async {
+    await _scanCatalogeModelUpdateAdapter.update(
+        scanCatalogeModel, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> deleteScanCataloge(ScanCatalogeModel scanCataloge) async {
+    await _scanCatalogeModelDeletionAdapter.delete(scanCataloge);
+  }
+}
+
+class _$ApplicatorDao extends ApplicatorDao {
+  _$ApplicatorDao(
+    this.database,
+    this.changeListener,
+  )   : _queryAdapter = QueryAdapter(database),
+        _applicatorModelInsertionAdapter = InsertionAdapter(
+            database,
+            'applicators',
+            (ApplicatorModel item) =>
+                <String, Object?>{'id': item.id, 'name': item.name});
+
+  final sqflite.DatabaseExecutor database;
+
+  final StreamController<String> changeListener;
+
+  final QueryAdapter _queryAdapter;
+
+  final InsertionAdapter<ApplicatorModel> _applicatorModelInsertionAdapter;
+
+  @override
+  Future<List<ApplicatorModel>?> getAllApplicators() async {
+    return _queryAdapter.queryList('SELECT * FROM applicators',
+        mapper: (Map<String, Object?> row) =>
+            ApplicatorModel(id: row['id'] as int, name: row['name'] as String));
+  }
+
+  @override
+  Future<ApplicatorModel?> getApplicatorById(int id) async {
+    return _queryAdapter.query('SELECT * FROM applicators WHERE id = ?1',
+        mapper: (Map<String, Object?> row) =>
+            ApplicatorModel(id: row['id'] as int, name: row['name'] as String),
+        arguments: [id]);
+  }
+
+  @override
+  Future<void> deleteApplicator(int id) async {
+    await _queryAdapter.queryNoReturn('DELETE FROM applicators WHERE id = ?1',
+        arguments: [id]);
+  }
+
+  @override
+  Future<void> insertApplicator(ApplicatorModel applicatorModel) async {
+    await _applicatorModelInsertionAdapter.insert(
+        applicatorModel, OnConflictStrategy.abort);
   }
 }
