@@ -1,4 +1,4 @@
-import 'package:clinc_management_app/feature/diomain/entities/scan_cataloge.dart';
+import 'package:clinc_management_app/feature/diomain/entities/entities.dart';
 
 abstract class IScanRepo {
   Future<List<ScanCataloge>> getAllScanCataloge();
@@ -13,4 +13,8 @@ abstract class IScanRepo {
     int? estimatedTime,
   });
   Future<void> deleteScanCataloge(ScanCataloge scanCataloge);
+
+  Future<void> addScan({required Scan scan});
+  Future<List<Scan>?> getScansByReservation({required int reservationId});
+  Future<List<Scan>?> getScansByApplicatorId({required int applicatorId});
 }

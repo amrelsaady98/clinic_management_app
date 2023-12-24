@@ -94,6 +94,8 @@ class _$AppDatabase extends AppDatabase {
             'CREATE TABLE IF NOT EXISTS `scanCataloge` (`id` INTEGER NOT NULL, `type` INTEGER NOT NULL, `area` TEXT NOT NULL, `subArea` TEXT, `price` REAL, `estimatedTime` INTEGER, PRIMARY KEY (`id`))');
         await database.execute(
             'CREATE TABLE IF NOT EXISTS `applicators` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY (`id`))');
+        await database.execute(
+            'CREATE TABLE IF NOT EXISTS `scan` (`id` INTEGER NOT NULL, `reservationId` INTEGER NOT NULL, `applicatorId` INTEGER NOT NULL, `scanCatalogeId` INTEGER NOT NULL, PRIMARY KEY (`id`))');
 
         await callback?.onCreate?.call(database, version);
       },
@@ -204,6 +206,15 @@ class _$ScanDao extends ScanDao {
                   'price': item.price,
                   'estimatedTime': item.estimatedTime
                 }),
+        _scanModelInsertionAdapter = InsertionAdapter(
+            database,
+            'scan',
+            (ScanModel item) => <String, Object?>{
+                  'id': item.id,
+                  'reservationId': item.reservationId,
+                  'applicatorId': item.applicatorId,
+                  'scanCatalogeId': item.scanCatalogeId
+                }),
         _scanCatalogeModelUpdateAdapter = UpdateAdapter(
             database,
             'scanCataloge',
@@ -237,6 +248,8 @@ class _$ScanDao extends ScanDao {
 
   final InsertionAdapter<ScanCatalogeModel> _scanCatalogeModelInsertionAdapter;
 
+  final InsertionAdapter<ScanModel> _scanModelInsertionAdapter;
+
   final UpdateAdapter<ScanCatalogeModel> _scanCatalogeModelUpdateAdapter;
 
   final DeletionAdapter<ScanCatalogeModel> _scanCatalogeModelDeletionAdapter;
@@ -267,9 +280,37 @@ class _$ScanDao extends ScanDao {
   }
 
   @override
+  Future<List<ScanModel>?> getAllScanByResevation(int reservationId) async {
+    return _queryAdapter.queryList(
+        'SELECT * FROM scan WHERE reservationId = ?1',
+        mapper: (Map<String, Object?> row) => ScanModel(
+            id: row['id'] as int,
+            reservationId: row['reservationId'] as int,
+            applicatorId: row['applicatorId'] as int,
+            scanCatalogeId: row['scanCatalogeId'] as int),
+        arguments: [reservationId]);
+  }
+
+  @override
+  Future<List<ScanModel>?> getAllScanByApplicator(int applicatorId) async {
+    return _queryAdapter.queryList('SELECT * FROM scan WHERE applicatorId = ?1',
+        mapper: (Map<String, Object?> row) => ScanModel(
+            id: row['id'] as int,
+            reservationId: row['reservationId'] as int,
+            applicatorId: row['applicatorId'] as int,
+            scanCatalogeId: row['scanCatalogeId'] as int),
+        arguments: [applicatorId]);
+  }
+
+  @override
   Future<void> insertScanCataloge(ScanCatalogeModel scanCataloge) async {
     await _scanCatalogeModelInsertionAdapter.insert(
         scanCataloge, OnConflictStrategy.abort);
+  }
+
+  @override
+  Future<void> insertScan(ScanModel scan) async {
+    await _scanModelInsertionAdapter.insert(scan, OnConflictStrategy.abort);
   }
 
   @override

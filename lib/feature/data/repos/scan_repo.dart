@@ -1,5 +1,6 @@
 import 'package:clinc_management_app/feature/data/models/scan_cataoge.dart';
 import 'package:clinc_management_app/feature/data/sources/local/DAOs/scan_dao.dart';
+import 'package:clinc_management_app/feature/diomain/entities/scan.dart';
 import 'package:clinc_management_app/feature/diomain/entities/scan_cataloge.dart';
 import 'package:clinc_management_app/feature/diomain/repositories/scan_repo.dart';
 
@@ -50,5 +51,20 @@ class ScanRepo extends IScanRepo {
         estimatedTime: estimatedTime ?? scanCataloge.estimatedTime,
       ));
     }
+  }
+
+  @override
+  Future<void> addScan({required Scan scan}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Scan>?> getScansByApplicatorId({required int applicatorId}) {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<List<Scan>?> getScansByReservation({required int reservationId}) {
+    throw UnimplementedError();
   }
 }

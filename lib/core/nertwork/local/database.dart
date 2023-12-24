@@ -1,5 +1,6 @@
 import 'package:clinc_management_app/feature/data/models/applicator_model.dart';
 import 'package:clinc_management_app/feature/data/models/patient_model.dart';
+import 'package:clinc_management_app/feature/data/models/scan.dart';
 import 'package:clinc_management_app/feature/data/models/scan_cataoge.dart';
 
 import 'package:clinc_management_app/feature/data/sources/local/DAOs/daos.dart';
@@ -13,7 +14,8 @@ import 'package:sqflite/sqflite.dart' as sqflite;
 part 'database.g.dart';
 
 @Database(
-    version: 1, entities: [PatientModel, ScanCatalogeModel, ApplicatorModel])
+    version: 1,
+    entities: [PatientModel, ScanCatalogeModel, ApplicatorModel, ScanModel])
 abstract class AppDatabase extends FloorDatabase {
   @dao
   PatientDao get patientDao;
