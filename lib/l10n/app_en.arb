@@ -3,14 +3,21 @@
   "common_add": "Add",
   "common_age": "Age",
   "common_close": "Close",
+  "common_error": "Error",
+  "common_female": "female",
   "common_gender": "Gender",
   "common_male": "Male",
   "common_name": "Name",
   "common_not_exist": "Not Extist",
+  "common_ok": "Ok",
   "common_phone_number": "Phone Number",
+  "common_settings": "Settings",
   "common_yes": "Yes",
-  "common_female": "female",
+  "home_page_title": "Home",
   "patient_page_patients_data": "Patient's Data",
   "patients_data": "Patients Data",
-  "patients_page_add_new_patient": "Add New Patient"
+  "patients_page_add_new_patient": "Add New Patient",
+  "scan_page_title": "Scans",
+  "scan_settings_page_title": "Scan settings",
+  "scan_settings_preset_scans": "Preset Scans"
 }

@@ -3,155 +3,197 @@ import 'package:clinc_management_app/feature/diomain/entities/patient.dart';
 import 'package:clinc_management_app/feature/presntation/patients/bloc/patients_list_bloc/patient_state.dart';
 import 'package:clinc_management_app/feature/presntation/patients/bloc/patients_list_bloc/patients_bloc.dart';
 import 'package:clinc_management_app/feature/presntation/patients/bloc/patients_list_bloc/patients_event.dart';
-import 'package:data_table_2/data_table_2.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:window_manager/window_manager.dart';
 
 class AddPatientSection extends StatefulWidget {
-  const AddPatientSection({super.key, required this.state});
+  const AddPatientSection({
+    super.key,
+    required this.state,
+  });
   final state;
   @override
   State<AddPatientSection> createState() => _AddPatientSectionState();
 }
 
-class _AddPatientSectionState extends State<AddPatientSection> {
+class _AddPatientSectionState extends State<AddPatientSection>
+    with WindowListener {
   final nameController = TextEditingController();
   final ageController = TextEditingController();
   final genderController = TextEditingController();
   final phoneNumberController = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    windowManager.addListener(this);
+  }
+
+  @override
   Widget build(BuildContext context) {
     final translation = AppLocalizations.of(context);
-    return Container(
-      decoration: BoxDecoration(
-        border: Border.all(),
-      ),
-      padding: EdgeInsets.all(4.mm),
-      margin: EdgeInsets.all(2.mm),
-      alignment: AlignmentDirectional.center,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              SizedBox(
-                width: 50.mm,
-                child: CustomTextField(
-                  lable: translation!.common_name,
-                  onChange: (value) => context
-                      .read<PatientBloc>()
-                      .add(NewPatientFieldUpdate(name: value)),
-                  controller: nameController,
-                ),
-              ),
-              SizedBox(width: 4.mm),
-              SizedBox(
-                width: 30.mm,
-                child: DropdownMenu<int>(
-                  width: 30.mm,
-                  controller: ageController,
-                  label: Text(translation.common_age),
-                  inputDecorationTheme: InputDecorationTheme(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(2.mm))),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 0, horizontal: 2.mm),
+    return ResponsiveSizer(builder: (context, orientation, screentype) {
+      return Container(
+        decoration: BoxDecoration(
+          border: Border.all(),
+        ),
+        padding: EdgeInsets.all(4.mm),
+        margin: EdgeInsets.all(2.mm),
+        alignment: AlignmentDirectional.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                SizedBox(
+                  width: 50.mm,
+                  child: CustomTextField(
+                    lable: translation!.common_name,
+                    onChange: (value) => context
+                        .read<PatientBloc>()
+                        .add(NewPatientFieldUpdate(name: value)),
+                    controller: nameController,
                   ),
-                  dropdownMenuEntries: List<int>.generate(99, (index) => index)
-                      .map<DropdownMenuEntry<int>>((e) {
-                    return DropdownMenuEntry(
-                      value: e,
-                      label: "$e",
-                    );
-                  }).toList(),
                 ),
-              ),
-              SizedBox(width: 4.mm),
-              SizedBox(
-                width: 30.mm,
-                child: DropdownMenu<String>(
+                SizedBox(width: 4.mm),
+                SizedBox(
                   width: 30.mm,
-                  label: Text(translation.common_gender),
-                  controller: genderController,
-                  inputDecorationTheme: InputDecorationTheme(
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.all(Radius.circular(2.mm))),
-                    contentPadding:
-                        EdgeInsets.symmetric(vertical: 0, horizontal: 2.mm),
+                  child: DropdownMenu<int>(
+                    width: 30.mm,
+                    controller: ageController,
+                    label: Text(translation.common_age),
+                    inputDecorationTheme: InputDecorationTheme(
+                      border: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(2.mm))),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 0, horizontal: 2.mm),
+                    ),
+                    dropdownMenuEntries:
+                        List<int>.generate(99, (index) => index)
+                            .map<DropdownMenuEntry<int>>((e) {
+                      return DropdownMenuEntry(
+                        value: e,
+                        label: "$e",
+                      );
+                    }).toList(),
                   ),
-                  dropdownMenuEntries: [
-                    DropdownMenuEntry<String>(
-                      label: translation.common_male,
-                      value: "male",
+                ),
+                SizedBox(width: 4.mm),
+                SizedBox(
+                  width: 30.mm,
+                  child: DropdownMenu<String>(
+                    width: 30.mm,
+                    label: Text(translation.common_gender),
+                    controller: genderController,
+                    inputDecorationTheme: InputDecorationTheme(
+                      border: OutlineInputBorder(
+                          borderRadius:
+                              BorderRadius.all(Radius.circular(2.mm))),
+                      contentPadding:
+                          EdgeInsets.symmetric(vertical: 0, horizontal: 2.mm),
                     ),
-                    DropdownMenuEntry<String>(
-                      label: translation.common_female,
-                      value: "female",
-                    ),
-                  ],
+                    dropdownMenuEntries: [
+                      DropdownMenuEntry<String>(
+                        label: translation.common_male,
+                        value: "male",
+                      ),
+                      DropdownMenuEntry<String>(
+                        label: translation.common_female,
+                        value: "female",
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              SizedBox(width: 4.mm),
-              SizedBox(
-                width: 60.mm,
-                child: CustomTextField(
-                  lable: translation.common_phone_number,
-                  controller: phoneNumberController,
-                  inputFormatter: <TextInputFormatter>[
-                    FilteringTextInputFormatter.digitsOnly,
-                  ],
-                  onChange: (value) => context
-                      .read<PatientBloc>()
-                      .add(NewPatientFieldUpdate(phoneNumber: value)),
+                SizedBox(width: 4.mm),
+                SizedBox(
+                  width: 60.mm,
+                  child: CustomTextField(
+                    lable: translation.common_phone_number,
+                    controller: phoneNumberController,
+                    inputFormatter: <TextInputFormatter>[
+                      FilteringTextInputFormatter.digitsOnly,
+                    ],
+                    onChange: (value) => context
+                        .read<PatientBloc>()
+                        .add(NewPatientFieldUpdate(phoneNumber: value)),
+                  ),
                 ),
-              ),
-              SizedBox(
-                width: 50.mm,
-                child: Container(
-                  alignment: AlignmentDirectional.center,
-                  child: TextButton(
-                      onPressed: () {
-                        context.read<PatientBloc>().add(AddPatientEvent(
-                              patientName: nameController.text,
-                              patientAge: ageController.text,
-                              patientGender: genderController.text,
-                              patientPhoneNumber: phoneNumberController.text,
-                            ));
-                      },
-                      child: Text(translation.common_add)),
+                SizedBox(
+                  width: 50.mm,
+                  child: Container(
+                    alignment: AlignmentDirectional.center,
+                    child: TextButton(
+                        onPressed: () {
+                          context.read<PatientBloc>().add(AddPatientEvent(
+                                patientName: nameController.text,
+                                patientAge: ageController.text,
+                                patientGender: genderController.text,
+                                patientPhoneNumber: phoneNumberController.text,
+                              ));
+                        },
+                        child: Text(translation.common_add)),
+                  ),
                 ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+              ],
+            ),
+          ],
+        ),
+      );
+    });
   }
 }
 
-class PatientData extends StatelessWidget {
+class PatientsDataTable extends StatefulWidget {
+  const PatientsDataTable({super.key});
+
+  @override
+  State<PatientsDataTable> createState() => _PatientsDataTableState();
+}
+
+class _PatientsDataTableState extends State<PatientsDataTable> {
+  @override
+  Widget build(BuildContext context) {
+    return const Placeholder();
+  }
+}
+
+class PatientData extends StatefulWidget {
   const PatientData({super.key, required PatientState state}) : _state = state;
   final PatientState _state;
+
+  @override
+  State<PatientData> createState() => _PatientDataState();
+}
+
+class _PatientDataState extends State<PatientData> with WindowListener {
+  @override
+  void initState() {
+    super.initState();
+    windowManager.addListener(this);
+  }
 
   @override
   Widget build(BuildContext context) {
     AppLocalizations? translation = AppLocalizations.of(context);
     ThemeData theme = Theme.of(context);
 
-    return ListView.separated(
-      shrinkWrap: true,
-      itemBuilder: (_, index) {
-        return _patientItem(context, _state.patientsList![index]);
-      },
-      separatorBuilder: (_, index) => const Divider(),
-      itemCount: _state.patientsList!.length,
+    return SingleChildScrollView(
+      child: ListView.separated(
+        shrinkWrap: true,
+        itemBuilder: (_, index) {
+          return _patientItem(context, widget._state.patientsList![index]);
+        },
+        separatorBuilder: (_, index) => const Divider(),
+        itemCount: widget._state.patientsList!.length,
+      ),
     );
   }
 
@@ -161,13 +203,17 @@ class PatientData extends StatelessWidget {
     return Container(
       child: Row(children: [
         Flexible(
-          flex: 3,
+          flex: 4,
           child: Container(
-            color: Colors.amber,
             width: double.infinity,
+            padding: EdgeInsetsDirectional.symmetric(
+              horizontal: 4.spa,
+              vertical: 2.spa,
+            ),
+            alignment: AlignmentDirectional.centerStart,
             child: Text(
               patient.name,
-              style: theme.textTheme.bodyMedium?.copyWith(fontSize: 12.sp),
+              style: theme.textTheme.bodyMedium?.copyWith(fontSize: 10.spa),
             ),
           ),
         ),
@@ -175,8 +221,14 @@ class PatientData extends StatelessWidget {
           flex: 1,
           child: Container(
             width: double.infinity,
+            padding: EdgeInsetsDirectional.symmetric(
+              horizontal: 4.spa,
+              vertical: 2.spa,
+            ),
+            alignment: AlignmentDirectional.center,
             child: Text(
               patient.age.toString(),
+              style: theme.textTheme.bodyMedium?.copyWith(fontSize: 10.spa),
             ),
           ),
         ),
@@ -184,21 +236,34 @@ class PatientData extends StatelessWidget {
           flex: 1,
           child: Container(
             width: double.infinity,
+            padding: EdgeInsetsDirectional.symmetric(
+              horizontal: 4.spa,
+              vertical: 2.spa,
+            ),
+            alignment: AlignmentDirectional.center,
             child: Icon(
               (patient.gender == "male" || patient.gender == "ذكر")
                   ? FontAwesomeIcons.mars
                   : FontAwesomeIcons.venus,
-              size: 4.mm,
+              size: 10.spa,
             ),
           ),
         ),
         Flexible(
-            flex: 1,
-            child: Container(
-                width: double.infinity,
-                color: Colors.teal,
-                child:
-                    Text(patient.phoneNumber ?? translation!.common_not_exist)))
+          flex: 3,
+          child: Container(
+            padding: EdgeInsetsDirectional.symmetric(
+              horizontal: 4.spa,
+              vertical: 2.spa,
+            ),
+            alignment: AlignmentDirectional.center,
+            width: double.infinity,
+            child: Text(
+              patient.phoneNumber ?? translation!.common_not_exist,
+              style: theme.textTheme.bodyMedium?.copyWith(fontSize: 10.spa),
+            ),
+          ),
+        )
       ]),
     );
   }

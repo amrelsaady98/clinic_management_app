@@ -3,14 +3,21 @@
   "common_add": "إضافة",
   "common_age": "السن",
   "common_close": "اغلاق",
+  "common_error": "Error",
+  "common_female": "أنثي",
   "common_gender": "النوع",
   "common_male": "ذكر",
   "common_name": "الاسم",
   "common_not_exist": "Not Extist",
+  "common_ok": "Ok",
   "common_phone_number": "رقم الهاتف",
+  "common_settings": "Settings",
   "common_yes": "نعم",
-  "common_female": "أنثي",
+  "home_page_title": "Home",
   "patient_page_patients_data": "بيانات المريض",
   "patients_data": "بيانات المرضي",
-  "patients_page_add_new_patient": "اضافة مريض"
+  "patients_page_add_new_patient": "اضافة مريض",
+  "scan_page_title": "Scans",
+  "scan_settings_page_title": "Scan settings",
+  "scan_settings_preset_scans": "Preset Scans"
 }

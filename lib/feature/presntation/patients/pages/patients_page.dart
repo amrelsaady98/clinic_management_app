@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:clinc_management_app/core/utils/widgets/input_widgets.dart';
 import 'package:clinc_management_app/feature/presntation/patients/bloc/patients_list_bloc/patients_event.dart';
+import 'package:clinc_management_app/feature/presntation/patients/widgets/fiter_section.dart';
 import 'package:clinc_management_app/feature/presntation/patients/widgets/patients_page_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -9,12 +10,31 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
+import "package:fluent_ui/fluent_ui.dart" as f;
+import 'package:window_manager/window_manager.dart';
 
 import '../bloc/patients_list_bloc/patient_state.dart';
 import '../bloc/patients_list_bloc/patients_bloc.dart';
 
-class PatientsPages extends StatelessWidget {
-  const PatientsPages({super.key});
+class PatientsPage extends StatefulWidget {
+  const PatientsPage({super.key});
+
+  @override
+  State<PatientsPage> createState() => _PatientsPageState();
+}
+
+class _PatientsPageState extends State<PatientsPage> with WindowListener {
+  @override
+  void initState() {
+    super.initState();
+    windowManager.addListener(this);
+  }
+
+  @override
+  void onWindowResized() {
+    setState(() {});
+    super.onWindowResized();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,159 +43,79 @@ class PatientsPages extends StatelessWidget {
     return BlocBuilder<PatientBloc, PatientState>(
       builder: (context, state) {
         print("State Type ${state.runtimeType}");
-        return BlocListener<PatientBloc, PatientState>(
-          listener: (context, state) {
-            debugPrint("listener --> ${state.patientsList?.last.id}");
-          },
-          child: Container(
-            width: double.infinity,
-            height: double.infinity,
-            child: Column(
-              children: [
-                //Header
-                SizedBox(
-                  height: 30.mm,
-                  width: double.infinity,
-                  child: Container(
-                    height: double.infinity,
-                    width: double.infinity,
-                    color: theme.colorScheme.surfaceVariant,
-                    padding: EdgeInsets.all(4.mm),
-                    child: Row(
-                      children: [
-                        Text(
-                          "${translation?.patients_data}",
-                          style: theme.textTheme.titleLarge,
-                        ),
-                        IconButton(
-                          onPressed: () {
-                            // showDialog(
-                            //     context: context,
-                            //     builder: (context) {
-                            //       return AddPatientDialouge(
-                            //           patientState: state, onPressAdd: () {});
-                            //     });
-                            if (!state.addPatientVisible) {
-                              context
-                                  .read<PatientBloc>()
-                                  .add(ViewAddPatientSection());
-                            } else {
-                              context
-                                  .read<PatientBloc>()
-                                  .add(HideAddPatientSection());
-                            }
-                          },
-                          icon: Icon(!state.addPatientVisible
-                              ? FontAwesomeIcons.circlePlus
-                              : FontAwesomeIcons.xmark),
-                        )
-                      ],
+        return f.ScaffoldPage(
+          header: f.PageHeader(
+            padding: 12,
+            title: Container(
+              width: double.infinity,
+              padding: EdgeInsets.all(4.mm),
+              child: Row(
+                children: [
+                  Text(
+                    "${translation?.patients_data}",
+                    style: theme.textTheme.titleLarge,
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      f.showDialog(
+                          context: context,
+                          builder: (context) {
+                            return f.ContentDialog(
+                              content: f.SizedBox(
+                                height: 30.mm,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    SizedBox(width: 40.mm, child: f.TextBox()),
+                                    SizedBox(width: 40.mm, child: f.TextBox()),
+                                  ],
+                                ),
+                              ),
+                            );
+                          });
+                      if (!state.addPatientVisible) {
+                        context
+                            .read<PatientBloc>()
+                            .add(ViewAddPatientSection());
+                      } else {
+                        context
+                            .read<PatientBloc>()
+                            .add(HideAddPatientSection());
+                      }
+                    },
+                    icon: Icon(
+                      !state.addPatientVisible
+                          ? f.FluentIcons.add
+                          : f.FluentIcons.remove,
                     ),
-                  ),
-                ),
-                Visibility(
-                  visible: state.addPatientVisible,
-                  child: SizedBox(
-                      height: 30.mm,
-                      child: AddPatientSection(
-                        state: state,
-                      )),
-                ),
-                // Search & filters
-                SizedBox(
-                  height: 20.mm,
-                  width: double.infinity,
-                  child: Container(
-                    height: double.infinity,
-                    width: double.infinity,
-                    color: theme.colorScheme.surface,
-                    padding: EdgeInsets.all(4.mm),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SizedBox(
-                          width: 50.mm,
-                          child: TextField(
-                            onChanged: (value) {
-                              BlocProvider.of<PatientBloc>(context).add(
-                                  GetFilteredPateinetsEvent(nameFilter: value));
-                            },
-                            decoration: InputDecoration(
-                              label: Text("${translation!.common_name}"),
-                              border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(2.mm))),
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 2.mm),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 2.mm,
-                        ),
-                        SizedBox(
-                          width: 30.mm,
-                          child: DropdownMenu<int>(
-                            width: 30.mm,
-                            label: Text(translation.common_age),
-                            inputDecorationTheme: InputDecorationTheme(
-                              border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(2.mm))),
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 2.mm),
-                            ),
-                            dropdownMenuEntries:
-                                List<int>.generate(99, (index) => index)
-                                    .map<DropdownMenuEntry<int>>((e) {
-                              return DropdownMenuEntry(
-                                value: e,
-                                label: "$e",
-                              );
-                            }).toList(),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 2.mm,
-                        ),
-                        SizedBox(
-                          width: 50.mm,
-                          child: TextField(
-                            onChanged: (value) =>
-                                BlocProvider.of<PatientBloc>(context).add(
-                                    GetFilteredPateinetsEvent(
-                                        phoneNumberFilter: value)),
-                            keyboardType: TextInputType.number,
-                            inputFormatters: <TextInputFormatter>[
-                              FilteringTextInputFormatter.digitsOnly
-                            ],
-                            decoration: InputDecoration(
-                              label:
-                                  Text("${translation?.common_phone_number}"),
-                              border: OutlineInputBorder(
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(2.mm))),
-                              contentPadding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 2.mm),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: EdgeInsets.all(2.mm),
-                    child: (state.isTableLoading)
-                        ? const Center(child: CircularProgressIndicator())
-                        : Expanded(
-                            child: PatientData(state: state),
-                          ),
-                  ),
-                )
-              ],
+                  )
+                ],
+              ),
             ),
+          ),
+          content: Column(
+            children: [
+              Visibility(
+                visible: false,
+                child: SizedBox(
+                    height: 30.mm,
+                    child: AddPatientSection(
+                      state: state,
+                    )),
+              ),
+              // Search & filters
+              SizedBox(
+                height: 30.mm,
+                child: const FilterSection(),
+              ),
+              Expanded(
+                child: (state.isTableLoading)
+                    ? const Center(child: CircularProgressIndicator())
+                    : Expanded(
+                        child: PatientData(state: state),
+                      ),
+              ),
+            ],
           ),
         );
       },

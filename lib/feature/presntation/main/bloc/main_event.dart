@@ -1,11 +1,11 @@
-import 'package:clinc_management_app/feature/presntation/home/bloc/home_state.dart';
+import 'package:clinc_management_app/feature/presntation/main/bloc/main_state.dart';
 import 'package:equatable/equatable.dart';
 
-abstract class HomePageEvent extends Equatable {
-  const HomePageEvent();
+abstract class MainPageEvent extends Equatable {
+  const MainPageEvent();
 }
 
-class NavigationItemClicked extends HomePageEvent {
+class NavigationItemClicked extends MainPageEvent {
   final SelectedHomePage selectedPage;
 
   const NavigationItemClicked(this.selectedPage);
