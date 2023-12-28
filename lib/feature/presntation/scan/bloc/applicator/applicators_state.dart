@@ -1,24 +1,24 @@
 import 'package:clinc_management_app/feature/diomain/entities/entities.dart';
 import 'package:equatable/equatable.dart';
 
-class ScanCatalogState extends Equatable {
-  final List<ScanCataloge>? scanCatalogs;
+class ApplicatorsState extends Equatable {
+  final List<Applicator>? applicators;
   final bool isTableLoading;
   final bool loadTable;
-  const ScanCatalogState({
-    this.scanCatalogs,
+  const ApplicatorsState({
+    this.applicators,
     required this.isTableLoading,
     required this.loadTable,
   });
-  factory ScanCatalogState.initialState() =>
-      const ScanCatalogState(isTableLoading: true, loadTable: false);
-  ScanCatalogState copWith({
-    List<ScanCataloge>? scanCatalogs,
+  factory ApplicatorsState.initialState() =>
+      const ApplicatorsState(isTableLoading: true, loadTable: false);
+  ApplicatorsState copWith({
+    List<Applicator>? applicators,
     bool? isTableLoading,
     bool? loadTable,
   }) {
-    return ScanCatalogState(
-      scanCatalogs: scanCatalogs ?? this.scanCatalogs,
+    return ApplicatorsState(
+      applicators: applicators ?? this.applicators,
       isTableLoading: isTableLoading ?? this.isTableLoading,
       loadTable: loadTable ?? this.loadTable,
     );
@@ -26,7 +26,7 @@ class ScanCatalogState extends Equatable {
 
   @override
   List<Object?> get props => [
-        scanCatalogs,
+        applicators,
         isTableLoading,
       ];
 }

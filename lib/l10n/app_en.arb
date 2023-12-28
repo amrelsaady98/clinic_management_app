@@ -18,6 +18,7 @@
   "patients_data": "Patients Data",
   "patients_page_add_new_patient": "Add New Patient",
   "scan_page_title": "Scans",
+  "scan_settings_applicators": "Applicators",
   "scan_settings_page_title": "Scan settings",
   "scan_settings_preset_scans": "Preset Scans"
 }

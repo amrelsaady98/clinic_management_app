@@ -4,6 +4,7 @@ import 'package:clinc_management_app/feature/data/models/scan.dart';
 import 'package:clinc_management_app/feature/data/models/scan_cataoge.dart';
 
 import 'package:clinc_management_app/feature/data/sources/local/DAOs/daos.dart';
+import 'package:clinc_management_app/feature/data/sources/local/DAOs/scan_catalog_dao.dart';
 import 'package:clinc_management_app/feature/data/sources/local/DAOs/scan_dao.dart';
 import 'package:clinc_management_app/feature/diomain/entities/entities.dart';
 
@@ -25,4 +26,7 @@ abstract class AppDatabase extends FloorDatabase {
 
   @dao
   ApplicatorDao get applicatorDao;
+
+  @dao
+  ScanCatalogeDao get scanCatalogeDao;
 }

@@ -1,12 +1,20 @@
 import 'package:clinc_management_app/core/nertwork/local/database.dart';
 import 'package:clinc_management_app/core/utils/router/router.dart';
+import 'package:clinc_management_app/feature/data/repos/applicator_repo.dart';
 import 'package:clinc_management_app/feature/data/repos/patient_repo.dart';
+import 'package:clinc_management_app/feature/data/repos/scan_repo.dart';
 import 'package:clinc_management_app/feature/presntation/main/bloc/main_bloc.dart';
 import 'package:clinc_management_app/feature/presntation/main/bloc/main_state.dart';
 
 import 'package:clinc_management_app/feature/presntation/patients/bloc/patients_list_bloc/patient_state.dart';
 import 'package:clinc_management_app/feature/presntation/patients/bloc/patients_list_bloc/patients_bloc.dart';
 import 'package:clinc_management_app/feature/presntation/patients/bloc/patients_list_bloc/patients_event.dart';
+import 'package:clinc_management_app/feature/presntation/scan/bloc/applicator/applicators_bloc.dart';
+import 'package:clinc_management_app/feature/presntation/scan/bloc/applicator/applicators_state.dart';
+import 'package:clinc_management_app/feature/presntation/scan/bloc/sacn_catalog/scan_catalog_bloc.dart';
+import 'package:clinc_management_app/feature/presntation/scan/bloc/sacn_catalog/scan_catalog_event.dart';
+import 'package:clinc_management_app/feature/presntation/scan/bloc/sacn_catalog/scan_catalog_state.dart';
+import 'package:floor/floor.dart';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart' as m;
@@ -59,8 +67,10 @@ void main() async {
       await windowManager.setSkipTaskbar(false);
     });
   }
+
   AppDatabase database =
-      await $FloorAppDatabase.databaseBuilder('app_database.db').build();
+      await $FloorAppDatabase.databaseBuilder('app_database_2.db').build();
+
   runApp(MyApp(
     appDatabase: database,
   ));
@@ -80,10 +90,27 @@ class MyApp extends StatelessWidget {
         ),
         BlocProvider<PatientBloc>(
           create: (context) => PatientBloc(
-              initialState: const PatientState(isTableLoading: true),
-              patientsRepo: PatientsRepo(_appDatabase.patientDao))
-            ..add(const GetAllPatientsEvent()),
+            initialState: const PatientState(isTableLoading: true),
+            patientsRepo: PatientsRepo(_appDatabase.patientDao),
+          )..add(
+              const GetAllPatientsEvent(),
+            ),
         ),
+        BlocProvider(
+          create: (context) => ScanCatalogBloc(
+            initialState: ScanCatalogState.initialState(),
+            scanRepo: ScanRepo(
+              scanDao: _appDatabase.scanDao,
+              scanCatalogeDao: _appDatabase.scanCatalogeDao,
+            ),
+          )..add(GetAllScanCatalogEvent()),
+        ),
+        BlocProvider(
+          create: (context) => ApplicatorsBloc(
+            initialState: ApplicatorsState.initialState(),
+            applicatorRepo: ApplicatorRepo(_appDatabase.applicatorDao),
+          ),
+        )
       ],
       child: ResponsiveSizer(builder: (context, orientation, screenType) {
         return FluentApp.router(

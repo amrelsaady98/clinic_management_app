@@ -1,10 +1,10 @@
 import 'package:clinc_management_app/feature/diomain/entities/scan_cataloge.dart';
 import 'package:floor/floor.dart';
 
-@Entity(tableName: "scanCataloge", primaryKeys: ['id'])
+@Entity(tableName: 'scanCataloge', primaryKeys: ['id'])
 class ScanCatalogeModel extends ScanCataloge {
   const ScanCatalogeModel({
-    required super.id,
+    super.id,
     required super.type,
     required super.area,
     super.subArea,

@@ -5,12 +5,11 @@ class Applicator extends Equatable {
   @PrimaryKey(
     autoGenerate: true,
   )
-  final int id;
+  final int? id;
   final String name;
 
-  const Applicator({required this.id, required this.name});
+  const Applicator({this.id, required this.name});
 
   @override
-  // TODO: implement props
-  List<Object?> get props => throw UnimplementedError();
+  List<Object?> get props => [id, name];
 }

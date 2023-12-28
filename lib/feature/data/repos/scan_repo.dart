@@ -1,4 +1,5 @@
 import 'package:clinc_management_app/feature/data/models/scan_cataoge.dart';
+import 'package:clinc_management_app/feature/data/sources/local/DAOs/scan_catalog_dao.dart';
 import 'package:clinc_management_app/feature/data/sources/local/DAOs/scan_dao.dart';
 import 'package:clinc_management_app/feature/diomain/entities/scan.dart';
 import 'package:clinc_management_app/feature/diomain/entities/scan_cataloge.dart';
@@ -6,28 +7,31 @@ import 'package:clinc_management_app/feature/diomain/repositories/scan_repo.dart
 
 class ScanRepo extends IScanRepo {
   final ScanDao _scanDao;
+  final ScanCatalogeDao _catalogeDao;
 
-  ScanRepo({required ScanDao scanDao}) : _scanDao = scanDao;
+  ScanRepo({required ScanCatalogeDao scanCatalogeDao, required ScanDao scanDao})
+      : _scanDao = scanDao,
+        _catalogeDao = scanCatalogeDao;
   @override
   Future<void> addScanCataloge(ScanCataloge scanCataloge) async {
-    await _scanDao
+    await _catalogeDao
         .insertScanCataloge(ScanCatalogeModel.fromEnitity(scanCataloge));
   }
 
   @override
   Future<void> deleteScanCataloge(ScanCataloge scanCataloge) async {
-    await _scanDao
+    await _catalogeDao
         .deleteScanCataloge(ScanCatalogeModel.fromEnitity(scanCataloge));
   }
 
   @override
   Future<List<ScanCataloge>> getAllScanCataloge() async {
-    return await _scanDao.getAllScanCataloge() ?? <ScanCataloge>[];
+    return await _catalogeDao.getAllScanCataloge() ?? <ScanCataloge>[];
   }
 
   @override
   Future<ScanCataloge?> getScanCatalogeById({required int id}) async {
-    return await _scanDao.getScanCatalogeById(id);
+    return await _catalogeDao.getScanCatalogeById(id);
   }
 
   @override
@@ -42,8 +46,7 @@ class ScanRepo extends IScanRepo {
   }) async {
     ScanCataloge? scanCataloge = await getScanCatalogeById(id: id);
     if (scanCataloge != null) {
-      _scanDao.updateScanCataloge(ScanCatalogeModel(
-        id: id,
+      _catalogeDao.updateScanCataloge(ScanCatalogeModel(
         type: type ?? scanCataloge.type,
         area: area ?? scanCataloge.area,
         subArea: subArea ?? scanCataloge.subArea,

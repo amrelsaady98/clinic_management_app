@@ -4,6 +4,6 @@ import 'package:floor/floor.dart';
 @Entity(tableName: 'applicators', primaryKeys: ['id'])
 class ApplicatorModel extends Applicator {
   const ApplicatorModel({required super.id, required super.name});
-  factory ApplicatorModel.fromEntity({required id, required name}) =>
+  factory ApplicatorModel.fromEntity({int? id, required name}) =>
       ApplicatorModel(id: id, name: name);
 }

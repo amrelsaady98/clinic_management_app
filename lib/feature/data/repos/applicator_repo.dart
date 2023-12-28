@@ -10,8 +10,8 @@ class ApplicatorRepo extends IApplicatorRepo {
 
   @override
   Future<void> addAplicator(Applicator aplicator) async {
-    await _applicatorDao.insertApplicator(
-        ApplicatorModel.fromEntity(id: aplicator, name: aplicator.name));
+    await _applicatorDao
+        .insertApplicator(ApplicatorModel.fromEntity(name: aplicator.name));
   }
 
   @override

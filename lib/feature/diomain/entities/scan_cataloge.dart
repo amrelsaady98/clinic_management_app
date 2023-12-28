@@ -9,10 +9,8 @@ enum ScanType {
 }
 
 class ScanCataloge extends Equatable {
-  @PrimaryKey(
-    autoGenerate: true,
-  )
-  final int id;
+  @PrimaryKey(autoGenerate: true)
+  final int? id;
   final ScanType type;
   final String area;
   final String? subArea;
@@ -20,7 +18,7 @@ class ScanCataloge extends Equatable {
   final int? estimatedTime;
 
   const ScanCataloge({
-    required this.id,
+    this.id,
     required this.type,
     required this.area,
     this.subArea,
