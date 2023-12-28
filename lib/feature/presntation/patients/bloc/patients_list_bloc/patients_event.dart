@@ -43,7 +43,8 @@ class AddPatientEvent extends PatientsEvent {
     this.patientPhoneNumber,
   });
 
-  final String? patientName, patientGender, patientPhoneNumber, patientAge;
+  final String? patientName, patientGender, patientPhoneNumber;
+  final int? patientAge;
 
   @override
   List<Object?> get props => [];

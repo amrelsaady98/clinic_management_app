@@ -132,12 +132,12 @@ class _AddPatientSectionState extends State<AddPatientSection>
                     alignment: AlignmentDirectional.center,
                     child: TextButton(
                         onPressed: () {
-                          context.read<PatientBloc>().add(AddPatientEvent(
+                          /* context.read<PatientBloc>().add(AddPatientEvent(
                                 patientName: nameController.text,
                                 patientAge: ageController.text,
                                 patientGender: genderController.text,
                                 patientPhoneNumber: phoneNumberController.text,
-                              ));
+                              )); */
                         },
                         child: Text(translation.common_add)),
                   ),

@@ -61,12 +61,11 @@ class PatientBloc extends Bloc<PatientsEvent, PatientState> {
     emit(state.copyWith(isAddPatientLoading: true));
     await _patientsRepo.addPatient(Patient(
       name: event.patientName!,
-      age: int.parse(event.patientAge!),
+      age: event.patientAge ?? 20,
       gender: event.patientGender!,
       phoneNumber: event.patientPhoneNumber!,
     ));
     emit(state.copyWith(
-      isPatientAdded: true,
       isAddPatientLoading: false,
     ));
     await loadPatientData(event, emit);
